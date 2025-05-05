@@ -1,1 +1,1 @@
-# ACWH_Switch
+A python script that monitors the ac input source of a victron inverter and automatically switches the AC water heater switch on if the source is Grid or Shore, and switches it off otherwise. meant to operate on a cerbo gx but might work on other venus os devices as well.
