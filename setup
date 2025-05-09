@@ -1,8 +1,4 @@
 #!/bin/bash
-# create log file
-# chmod +x /data/ACWH_Switch/services/auto_switch/run
-# chmod +x /data/ACWH_Switch/services/auto_switch/log/run
-# chmod 777 /data/ACWH_Switch/auto_switch.py
 
 packageLogFile="/data/ACWH_Switch/log"
 
