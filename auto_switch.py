@@ -27,7 +27,7 @@ STATE_PATH_SUFFIX = "/State"
 BUS_ITEM_INTERFACE = "com.victronenergy.BusItem"
 SETTINGS_RELAY_BASE_PATH = "/Settings/Relay"
 
-TARGET_CUSTOM_NAMES = ["AC Water Heater", "AC WH"]
+TARGET_CUSTOM_NAMES = ["AC Water Heater", "AC WH"] # you can add/remove/change custom names here that the service will look for
 MAX_RELAY_NUMBER_TO_CHECK = 10  # Adjust this if you expect more relays
 
 class WaterHeaterController:
