@@ -2,6 +2,8 @@ A python script that monitors the ac input source of a victron inverter and auto
 
 ######## INSTALLATION #########
 
+The water heater must be controlled by one of the GX devices relays, and that relay must have the name changed to "AC Water Heater" or "AC WH" in order for the service to discover it.
+
 The easiest method of installation is using Kevin Windrem's setup helper. 
 add this package to the packages list
 
