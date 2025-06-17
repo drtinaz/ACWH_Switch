@@ -14,3 +14,5 @@ v1.2
   added a delay to init to give dbus more time to populate.
 v1.3
   increase init delay to 10 sec.
+v1.4
+  added shebang back that mistakenly was removed in v1.3
