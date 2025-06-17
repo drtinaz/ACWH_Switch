@@ -39,7 +39,7 @@ class WaterHeaterController:
         self.relay_found = False  # Flag to prevent repeated finding
 
         # Find the water heater relay at startup, keep trying every 5 seconds
-        GLib.timeout_add_seconds(10, self._find_water_heater_relay) # Increased initial delay to 5 seconds
+        GLib.timeout_add_seconds(5, self._find_water_heater_relay) # Increased initial delay to 5 seconds
 
     def _get_dbus_object(self, service_name, path):
         try:
