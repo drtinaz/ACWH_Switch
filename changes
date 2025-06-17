@@ -16,3 +16,5 @@ v1.3
   increase init delay to 10 sec.
 v1.4
   added shebang back that mistakenly was removed in v1.3
+v1.5
+  change startup delay back to 5 sec
