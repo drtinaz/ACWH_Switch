@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import dbus
 import logging
 import os
@@ -38,14 +36,14 @@ class WaterHeaterController:
         self.initial_state_set = False
         self.relay_found = False  # Flag to prevent repeated finding
 
-        # Find the water heater relay at startup
-        GLib.timeout_add_seconds(2, self._find_water_heater_relay)
+        # Find the water heater relay at startup, keep trying every 5 seconds
+        GLib.timeout_add_seconds(5, self._find_water_heater_relay) # Increased initial delay to 5 seconds
 
     def _get_dbus_object(self, service_name, path):
         try:
             return self.bus.get_object(service_name, path)
         except dbus.exceptions.DBusException as e:
-            logging.error(f"Error getting D-Bus object {service_name}{path}: {e}")
+            # Removed error logging here to avoid log spam during startup if service isn't ready
             return None
 
     def _get_dbus_value(self, service_name, path):
@@ -74,8 +72,9 @@ class WaterHeaterController:
 
     def _find_water_heater_relay(self):
         if self.relay_found:
-            return False # Only run once
+            return False # Stop running once found
 
+        logging.info(f"Attempting to find water heater relay with custom names: {TARGET_CUSTOM_NAMES}")
         for relay_number in range(MAX_RELAY_NUMBER_TO_CHECK):
             custom_name_path = f"{SETTINGS_RELAY_BASE_PATH}/{relay_number}{CUSTOM_NAME_PATH_SUFFIX}"
             custom_name = self._get_dbus_value(SETTINGS_SERVICE_NAME, custom_name_path)
@@ -86,18 +85,20 @@ class WaterHeaterController:
                 self.relay_found = True
                 # Set initial AC source and then start monitoring
                 GLib.timeout_add_seconds(1, self._initialize_monitoring)
-                return False  # Stop further searching in this iteration
-
-        logging.info(f"Could not find a relay with custom names: {TARGET_CUSTOM_NAMES}")
-        return False # Keep running the timeout until found or script ends
+                return False  # Stop further searching and scheduling this function
+        
+        # If not found after checking all relays, schedule to try again
+        logging.info("Water heater relay not found yet. Will retry...")
+        return True # Keep running this timeout until found
 
     def _initialize_monitoring(self):
         if self.initial_state_set or self.water_heater_relay_number is None:
-            return False # Only run once
+            return False # Only run once if initial state is set or relay not found yet
 
         source_value = self._get_dbus_value(SYSTEM_SERVICE, AC_ACTIVE_INPUT_SOURCE_PATH)
         if source_value is not None:
             source_text = self._interpret_ac_source(source_value)
+            logging.info(f"Initial AC input source: {source_text}")
             if source_text in ["Grid", "Shore"]:
                 self._set_relay_state(self.water_heater_relay_number, 1)  # Turn on
             else:
@@ -107,7 +108,9 @@ class WaterHeaterController:
             # Now start the periodic monitoring
             GLib.timeout_add_seconds(5, self._monitor_ac_input_source)
             return False # Don't run again
-        return True # Try again if source is not available yet
+        else:
+            logging.warning("AC input source not available for initial state setting. Retrying...")
+            return True # Try again if source is not available yet
 
     def _monitor_ac_input_source(self):
         if not self.initial_state_set or self.water_heater_relay_number is None:
