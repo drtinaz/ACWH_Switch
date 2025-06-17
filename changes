@@ -12,3 +12,5 @@ v1.2
   fixes situation where the wh relay would not be found when venus os reboots
   due to dbus not being availabke yet, and the service would not attempt again.
   added a delay to init to give dbus more time to populate.
+v1.3
+  increase init delay to 10 sec.
