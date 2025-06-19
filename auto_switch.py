@@ -37,6 +37,7 @@ class WaterHeaterController:
         self.previous_ac_source = None
         self.initial_state_set = False
         self.relay_found = False  # Flag to prevent repeated finding
+        self._ac_source_unavailable_warning_logged = False
 
         # Find the water heater relay at startup, keep trying every 5 seconds
         GLib.timeout_add_seconds(5, self._find_water_heater_relay) # Increased initial delay to 5 seconds
@@ -99,6 +100,11 @@ class WaterHeaterController:
 
         source_value = self._get_dbus_value(SYSTEM_SERVICE, AC_ACTIVE_INPUT_SOURCE_PATH)
         if source_value is not None:
+            # AC source is available, reset the warning flag if it was previously set
+            if self._ac_source_unavailable_warning_logged:
+                logging.info("AC input source is now available for initial state setting. Resetting warning flag.")
+                self._ac_source_unavailable_warning_logged = False
+
             source_text = self._interpret_ac_source(source_value)
             logging.info(f"Initial AC input source: {source_text}")
             if source_text in ["Grid", "Shore"]:
@@ -111,7 +117,10 @@ class WaterHeaterController:
             GLib.timeout_add_seconds(5, self._monitor_ac_input_source)
             return False # Don't run again
         else:
-            logging.warning("AC input source not available for initial state setting. Retrying...")
+            # AC input source not available, log warning only if not already logged
+            if not self._ac_source_unavailable_warning_logged:
+                logging.warning("AC input source not available for initial state setting. Retrying...")
+                self._ac_source_unavailable_warning_logged = True
             return True # Try again if source is not available yet
 
     def _monitor_ac_input_source(self):
@@ -119,16 +128,26 @@ class WaterHeaterController:
             return True # Wait until initial state is set and relay is found
 
         source_value = self._get_dbus_value(SYSTEM_SERVICE, AC_ACTIVE_INPUT_SOURCE_PATH)
-        if source_value is not None and source_value != self.previous_ac_source:
-            source_text = self._interpret_ac_source(source_value)
-            logging.info(f"AC Input Source changed to: {source_text} (Value: {source_value})")
-            if source_text in ["Grid", "Shore"]:
-                self._set_relay_state(self.water_heater_relay_number, 1)  # Turn on
-            else:
-                self._set_relay_state(self.water_heater_relay_number, 0)  # Turn off
-            self.previous_ac_source = source_value
-        elif source_value is None:
-            logging.warning(f"Could not read AC input source.")
+        
+        if source_value is not None:
+            # AC source is available, reset the warning flag if it was previously set
+            if self._ac_source_unavailable_warning_logged:
+                logging.info("AC input source is now available during monitoring. Resetting warning flag.")
+                self._ac_source_unavailable_warning_logged = False
+
+            if source_value != self.previous_ac_source:
+                source_text = self._interpret_ac_source(source_value)
+                logging.info(f"AC Input Source changed to: {source_text} (Value: {source_value})")
+                if source_text in ["Grid", "Shore"]:
+                    self._set_relay_state(self.water_heater_relay_number, 1)  # Turn on
+                else:
+                    self._set_relay_state(self.water_heater_relay_number, 0)  # Turn off
+                self.previous_ac_source = source_value
+        else: # source_value is None, meaning AC input source is unavailable
+            # Log warning only if not already logged
+            if not self._ac_source_unavailable_warning_logged:
+                logging.warning(f"Could not read AC input source during monitoring. Retrying...")
+                self._ac_source_unavailable_warning_logged = True
         return True  # Continue monitoring
 
     def _interpret_ac_source(self, value):
