@@ -18,3 +18,5 @@ v1.4
   added shebang back that mistakenly was removed in v1.3
 v1.5
   change startup delay back to 5 sec
+v1.6
+  reduce log flooding when venus reboots and active ac input is not yet available
