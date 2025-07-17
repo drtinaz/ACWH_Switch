@@ -6,16 +6,7 @@ import os
 from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository import GLib
 
-# Define the log file path
-LOG_FILE = '/data/ACWH_Switch/log'
-
-# Ensure the log directory exists
-os.makedirs(os.path.dirname(LOG_FILE), exist_ok=True)
-
-# Logging setup to write to the specified file
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s',
-                    filename=LOG_FILE)
+logging.basicConfig(level=logging.INFO)
 
 # D-Bus service names and paths
 SETTINGS_SERVICE_NAME = "com.victronenergy.settings"
