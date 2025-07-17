@@ -22,3 +22,5 @@ v1.6
   reduce log flooding when venus reboots and active ac input is not yet available
 v1.7
   add DbusSettingsList to add custom name setting for versions of venus os that do not have this field
+v1.8
+  redirect logging to /var/log/auto_switch
