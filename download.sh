@@ -154,7 +154,7 @@ fi
 # copy files
 echo ""
 echo "Copying new driver files..."
-cp -R /tmp/${driver_name}-master/${driver_name}/ ${driver_path}/${driver_name_instance}/
+cp -R /tmp/${driver_name}-master/ ${driver_path}/${driver_name_instance}/
 
 # remove temp files
 echo ""
