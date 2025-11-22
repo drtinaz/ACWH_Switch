@@ -96,7 +96,7 @@ if [ "$version" = "nightly build \"v$latest_release_nightly\"" ]; then
 fi
 
 echo "Downloading from: $url"
-wget -O /tmp/venus-os_${driver_name}.zip "$url"
+wget -O /tmp/${driver_name}.zip "$url"
 
 # check if download was successful
 if [ ! -f /tmp/${driver_name}.zip ]; then
