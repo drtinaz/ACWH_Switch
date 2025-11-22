@@ -1,4 +1,0 @@
-#!/bin/sh
-echo "*** starting ACWH_Switch ***"
-exec 2>&1
-exec /data/ACWH_Switch/auto_switch.py

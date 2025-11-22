@@ -1,0 +1,4 @@
+#!/bin/sh
+echo "*** starting auto_switch ***"
+exec 2>&1
+exec /data/apps/auto_switch/auto_switch.py
