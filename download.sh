@@ -3,6 +3,11 @@
 driver_path="/data/apps"
 driver_name="ACWH_Switch"
 
+# check if /data/apps path exists
+if [ ! -d "/data/apps" ]; then
+    mkdir -p /data/apps
+fi
+
 echo ""
 echo ""
 
