@@ -15,3 +15,9 @@ add this package to the packages list
 Package name: ACWH_Switch
 Tag or Branch: main
 Github User: drtinaz
+
+######## manual installation method without setuphelper #########
+open terminal and enter the following
+
+wget -O /tmp/download.sh https://raw.githubusercontent.com/drtinaz/ACWH_Switch/master/download.sh
+bash /tmp/download.sh
