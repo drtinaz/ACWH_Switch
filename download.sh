@@ -13,7 +13,7 @@ echo -n "Fetch current version numbers..."
 latest_release_stable=$(curl -s https://api.github.com/repos/drtinaz/${driver_name}/releases/latest | grep "tag_name" | cut -d : -f 2,3 | tr -d "\ " | tr -d \" | tr -d \,)
 
 # nightly build
-latest_release_nightly=$(curl -s https://raw.githubusercontent.com/drtinaz/${driver_name}/master/${driver_name}/${driver_name}.py | grep FirmwareVersion | awk -F'"' '{print $4}')
+latest_release_nightly=$(curl -s https://raw.githubusercontent.com/drtinaz/${driver_name}/master/${driver_name}.py | grep FirmwareVersion | awk -F'"' '{print $4}')
 
 
 echo
